@@ -10,35 +10,26 @@ Install the dependencies using pip: pip install -r requirements.txt
 Usage
 Start the application by running python app.py. This will start a development server on http://localhost:5000.
 Use a tool such as Postman or cURL to send POST requests to http://localhost:5000/sun-spot-analyser-api/grid to create a new grid. The request body should be a JSON object with the following structure:
-bash
-Copy code
 {
   "size": <integer>,
   "values": "<comma-separated list of integers>"
 }
+  
 Example request body:
-
-json
-Copy code
 {
   "size": 3,
   "values": "1,2,3,4,5,6,7,8,9"
 }
+  
 Example response:
-
-json
-Copy code
 {
   "id": 1
 }
+  
 Use a tool such as Postman or cURL to send GET requests to http://localhost:5000/sun-spot-analyser-api/scores?id=<grid_id> to get the scores for a grid. Replace <grid_id> with the ID of the grid you want to get the scores for. Example request URL:
-bash
-Copy code
+
 http://localhost:5000/sun-spot-analyser-api/scores?id=1
 Example response:
-
-json
-Copy code
 {
   "scores": [
     {"x": 2, "y": 2, "score": 25},
@@ -52,6 +43,7 @@ Copy code
     {"x": 1, "y": 1, "score": 11}
   ]
 }
+  
 Dockerization
 Build the Docker image using the Dockerfile provided: docker build -t sun-spot-analyser-app .
 Run the Docker container: docker run -p 5000:5000 sun-spot-analyser-app
