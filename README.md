@@ -10,7 +10,7 @@ Docker
 Instructions
 Clone the repository:
 
-git clone https://github.com/your-username/sun-spot-analyser-api.git
+git clone https://github.com/raal-jr/sun-spot-analyser-api.git
 Build the Docker image:
 
 docker build -t sun-spot-analyser-api .
