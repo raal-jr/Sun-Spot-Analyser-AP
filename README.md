@@ -1,148 +1,58 @@
 # Sun-Spot-Analyser-API
 
-Prerequisites
-
-Python 3.x
-
-Docker (if you want to use a containerized application)
-
+Requirements
+Python 3.6 or higher
+Flask
+SQLite3
 Installation
-
-Clone the repository to your local machine.
-
-
-Install the required Python packages using pip. Open a terminal window, navigate to the root directory of the project, and run:
-
-
+Clone the repository to your local machine
+Install the dependencies using pip: pip install -r requirements.txt
+Usage
+Start the application by running python app.py. This will start a development server on http://localhost:5000.
+Use a tool such as Postman or cURL to send POST requests to http://localhost:5000/sun-spot-analyser-api/grid to create a new grid. The request body should be a JSON object with the following structure:
+bash
 Copy code
-
-pip install -r requirements.txt
-
-(Optional) If you want to use a containerized application, build the Docker image by running:
-
-Copy code
-
-docker build -t sun-spot-analyser .
-
-Running the Application
-
-To start the application, run:
-
-Copy code
-
-python app.py
-
-(Optional) If you're using a containerized application, start the container by running:
-
-arduino
-
-Copy code
-
-docker run -p 5000:5000 sun-spot-analyser
-
-The API is now available at http://localhost:5000. You can use a tool like Postman to test the endpoints.
-Endpoints
-
-POST /sun-spot-analyser-api/grid
-
-Create a new grid.
-
-
-Request Body
+{
+  "size": <integer>,
+  "values": "<comma-separated list of integers>"
+}
+Example request body:
 
 json
-
 Copy code
-
 {
-    "size": 3,
-    "values": "1,2,3,4,5,6,7,8,9"
+  "size": 3,
+  "values": "1,2,3,4,5,6,7,8,9"
 }
-
-size: The size of the grid (integer).
-
-values: A comma-separated list of integers representing the values of the cells in the grid. The length of the list should be size^2.
-
-Response Body
+Example response:
 
 json
-
 Copy code
-
 {
-    "id": 1
+  "id": 1
 }
-
-id: The ID of the newly created grid.
-
-GET /sun-spot-analyser-api/scores?id={id}
-
-Get the scores for a grid.
-
-Request Parameters
-
-id: The ID of the grid (integer).
-
-Response Body
+Use a tool such as Postman or cURL to send GET requests to http://localhost:5000/sun-spot-analyser-api/scores?id=<grid_id> to get the scores for a grid. Replace <grid_id> with the ID of the grid you want to get the scores for. Example request URL:
+bash
+Copy code
+http://localhost:5000/sun-spot-analyser-api/scores?id=1
+Example response:
 
 json
-
 Copy code
-
 {
-    "scores": [
-        {
-            "x": 2,
-            "y": 3,
-            "score": 21
-        },
-        {
-            "x": 2,
-            "y": 2,
-            "score": 20
-        },
-        {
-            "x": 1,
-            "y": 3,
-            "score": 18
-        },
-        {
-            "x": 3,
-            "y": 3,
-            "score": 18
-        },
-        {
-            "x": 1,
-            "y": 2,
-            "score": 17
-        },
-        {
-            "x": 3,
-            "y": 2,
-            "score": 17
-        },
-        {
-            "x": 2,
-            "y": 1,
-            "score": 14
-        },
-        {
-            "x": 1,
-            "y": 1,
-            "score": 13
-        },
-        {
-            "x": 3,
-            "y": 1,
-            "score": 13
-        }
-    ]
+  "scores": [
+    {"x": 2, "y": 2, "score": 25},
+    {"x": 3, "y": 2, "score": 24},
+    {"x": 2, "y": 1, "score": 20},
+    {"x": 3, "y": 1, "score": 19},
+    {"x": 1, "y": 2, "score": 18},
+    {"x": 1, "y": 3, "score": 15},
+    {"x": 2, "y": 3, "score": 14},
+    {"x": 3, "y": 3, "score": 13},
+    {"x": 1, "y": 1, "score": 11}
+  ]
 }
-
-scores: A list of dictionaries representing the scores for each cell in the grid. Each dictionary has the following keys:
-
-x: The x-coordinate of the cell (integer).
-
-y: The y-coordinate of the cell (integer).
-
-score: The score for the cell (integer).
+Dockerization
+Build the Docker image using the Dockerfile provided: docker build -t sun-spot-analyser-app .
+Run the Docker container: docker run -p 5000:5000 sun-spot-analyser-app
+Note: It's recommended to use environment variables to set configuration variables like DB URI, password, etc. instead of hardcoding them into the code or Dockerfile.
