@@ -1,12 +1,13 @@
 # Sun-Spot-Analyser-API
 Overview
+
 This is a Flask API for analysing sun spot data.
 
-#Setup
+Setup
 Prerequisites
 Make sure you have the following installed on your machine:
 
-#Docker
+Docker
 Instructions
 Clone the repository:
 
