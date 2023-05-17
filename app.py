@@ -1,69 +1,97 @@
 from flask import Flask, request, jsonify
-import sqlite3
 
 app = Flask(__name__)
 
-# Create a new database and table to store grids
-conn = sqlite3.connect('sun_spot.db')
-c = conn.cursor()
-c.execute('''CREATE TABLE IF NOT EXISTS grids
-             (id INTEGER PRIMARY KEY, size INTEGER, values TEXT)''')
-conn.commit()
+grids = {}
+grid_id = 1
 
-# Endpoint to create a new grid
+
+@app.route('/')
+def welcome():
+    return 'Welcome to the Sun Spot Analyser API'
+
+
 @app.route('/sun-spot-analyser-api/grid', methods=['POST'])
 def create_grid():
-    # Parse request body
-    data = request.get_json()
-    size = data['size']
-    values = list(map(int, data['values'].split(',')))
-    
-    # Generate a new ID for the grid
-    c.execute('INSERT INTO grids (size, values) VALUES (?, ?)', (size, ','.join(map(str, values))))
-    grid_id = c.lastrowid
-    conn.commit()
-    
-    # Return the ID of the grid
-    return jsonify({'id': grid_id})
+    global grid_id
+    size = int(request.form['size'])
+    values = list(map(int, request.form['values'].split(',')))
 
-# Endpoint to get the scores for a grid
+    grid = {
+        'id': grid_id,
+        'size': size,
+        'values': values
+    }
+
+    grids[grid_id] = grid
+    grid_id += 1
+
+    return jsonify({'id': grid['id']}), 200
+
+
 @app.route('/sun-spot-analyser-api/scores', methods=['GET'])
 def get_scores():
-    # Parse query parameter
-    grid_id = request.args.get('id')
-    
-    # Retrieve the size and values of the grid from the database
-    c.execute('SELECT size, values FROM grids WHERE id=?', (grid_id,))
-    result = c.fetchone()
-    size = result[0]
-    values = list(map(int, result[1].split(',')))
-    
-    # Generate a 2D array to represent the grid
-    grid = [[0 for _ in range(size)] for _ in range(size)]
-    for i in range(size):
-        for j in range(size):
-            grid[i][j] = values[i * size + j]
-    
-    # Calculate the scores for each cell in the grid
+    grid_id = int(request.args.get('id'))
+    if grid_id in grids:
+        grid = grids[grid_id]
+        scores = calculate_scores(grid['size'], grid['values'])
+        return jsonify({'scores': scores}), 200
+    else:
+        return jsonify({'error': 'Grid not found'}), 404
+
+
+@app.route('/sun-spot-analyser-api/cell', methods=['GET'])
+def get_cell():
+    grid_id = int(request.args.get('id'))
+    x = int(request.args.get('x'))
+    y = int(request.args.get('y'))
+    if grid_id in grids:
+        grid = grids[grid_id]
+        cell_value = get_cell_value(grid['size'], grid['values'], x, y)
+        if cell_value is not None:
+            return jsonify({'x': x, 'y': y, 'value': cell_value}), 200
+        else:
+            return jsonify({'error': 'Invalid cell coordinates'}), 400
+    else:
+        return jsonify({'error': 'Grid not found'}), 404
+
+
+@app.route('/sun-spot-analyser-api/top', methods=['GET'])
+def get_top_values():
+    grid_id = int(request.args.get('id'))
+    limit = int(request.args.get('limit', 5))
+    if grid_id in grids:
+        grid = grids[grid_id]
+        top_values = get_top_values(grid['values'], limit)
+        return jsonify({'top_values': top_values}), 200
+    else:
+        return jsonify({'error': 'Grid not found'}), 404
+
+
+def calculate_scores(size, values):
     scores = []
-    for i in range(size):
-        for j in range(size):
-            score = grid[i][j]
-            if i > 0:
-                score += grid[i-1][j]
-            if i < size-1:
-                score += grid[i+1][j]
-            if j > 0:
-                score += grid[i][j-1]
-            if j < size-1:
-                score += grid[i][j+1]
-            scores.append({'x': j+1, 'y': i+1, 'score': score})
-    
-    # Sort the scores in descending order
-    scores.sort(key=lambda x: x['score'], reverse=True)
-    
-    # Return the scores as a JSON object
-    return jsonify({'scores': scores})
+    # Perform the score calculation logic here based on the grid size and values
+    # This is just a dummy implementation
+    for i, value in enumerate(values):
+        x = (i % size) + 1
+        y = (i // size) + 1
+        score = value * 2
+        scores.append({'x': x, 'y': y, 'score': score})
+    return scores
+
+
+def get_cell_value(size, values, x, y):
+    index = (y - 1) * size + (x - 1)
+    if 0 <= index < len(values):
+        return values[index]
+    else:
+        return None
+
+
+def get_top_values(values, limit):
+    sorted_values = sorted(values, reverse=True)
+    return sorted_values[:limit]
+
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
