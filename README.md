@@ -1,100 +1,62 @@
 # Sun Spot Analyser API
 
-Welcome to the Sun Spot Analyser API. This API allows you to create grids, calculate scores, retrieve cell values, and get top values from the sun spot data.
+The Sun Spot Analyser API is a RESTful API that allows users to analyze areas of the Sun for thermal activity. It provides endpoints to create a grid of raw heat measurements and calculate the solar activity scores for each location on the grid.
 
-## Installation
+Getting Started
+These instructions will guide you on setting up and running the Sun Spot Analyser API on your local machine.
 
-1. Clone the repository:
-   ```shell
-   git clone https://github.com/your/repo.git
+Prerequisites
+Python 3.x
+Flask (Python web framework)
+Installation
+Clone the repository:
+bash
+Copy code
+git clone https://github.com/raal-jr/sun-spot-analyser-api.git
+Navigate to the project directory:
+bash
+Copy code
+cd sun-spot-analyser-api
 Install the dependencies:
-shell
 Copy code
 pip install -r requirements.txt
 Usage
-Start the Flask server:
-
-shell
+Start the Flask development server:
 Copy code
 python app.py
-Access the API endpoints:
+The API will now be accessible at http://localhost:5000/.
+Endpoints
+The API provides the following endpoints:
 
-POST /sun-spot-analyser-api/grid: Create a new grid.
+POST /sun-spot-analyser-api/grid: Create a new grid of raw heat measurements.
+GET /sun-spot-analyser-api/scores: Get the solar activity scores for a specific grid.
+Refer to the API documentation or the code comments for detailed information about the request and response payloads of each endpoint.
 
-Request Body:
-json
-Copy code
-{
-  "size": 3,
-  "values": "4,2,3,2,2,1,3,2,1"
-}
-Example Request:
-shell
-Copy code
-curl -X POST -H "Content-Type: application/json" -d '{"size": 3, "values": "4,2,3,2,2,1,3,2,1"}' http://localhost:5000/sun-spot-analyser-api/grid
-Example Response:
-json
-Copy code
-{
-  "id": 1
-}
-GET /sun-spot-analyser-api/scores: Get scores for a grid.
+Example Usage
+To create a new grid:
 
-Parameters:
-id: The ID of the grid.
-Example Request:
-shell
+css
 Copy code
-curl -X GET http://localhost:5000/sun-spot-analyser-api/scores?id=1
-Example Response:
-json
-Copy code
-{
-  "scores": [
-    {"x": 1, "y": 1, "score": 10},
-    {"x": 1, "y": 2, "score": 14},
-    {"x": 1, "y": 3, "score": 8},
-    ...
-  ]
+$uri = "http://127.0.0.1:5000/sun-spot-analyser-api/grid"
+$headers = @{
+    "Content-Type" = "application/json"
 }
-GET /sun-spot-analyser-api/cell: Get the value of a cell in a grid.
+$body = @{
+    "size" = 3
+    "values" = "4,2,3,2,2,1,3,2,1"
+} | ConvertTo-Json
 
-Parameters:
-id: The ID of the grid.
-x: The X-coordinate of the cell.
-y: The Y-coordinate of the cell.
-Example Request:
-shell
-Copy code
-curl -X GET http://localhost:5000/sun-spot-analyser-api/cell?id=1&x=2&y=2
-Example Response:
-json
-Copy code
-{
-  "x": 2,
-  "y": 2,
-  "value": 2
-}
-GET /sun-spot-analyser-api/top: Get the top values from a grid.
+$response = Invoke-RestMethod -Uri $uri -Method POST -Headers $headers -Body $body
+$response
 
-Parameters:
-id: The ID of the grid.
-limit (optional): The maximum number of top values to retrieve (default: 5).
-Example Request:
-shell
+To get the solar activity scores for the grid:
+
+bash
 Copy code
-curl -X GET http://localhost:5000/sun-spot-analyser-api/top?id=1&limit=3
-Example Response:
-json
-Copy code
-{
-  "top_values": [4, 3, 2]
-}
+GET /sun-spot-analyser-api/scores?id=1
+
 Contributing
-Fork the repository.
-Create a new branch.
-Make your changes and commit them.
-Push your changes to your forked repository.
-Create a pull request.
+Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
+
 License
 This project is licensed under the MIT License.
