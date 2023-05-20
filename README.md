@@ -55,6 +55,12 @@ bash
 Copy code
 GET /sun-spot-analyser-api/scores?id=1
 
+Running Tests
+You can run the unit tests for the API using the following command:
+
+Copy code
+python -m unittest discover tests
+
 Contributing
 Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
 
