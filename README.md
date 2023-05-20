@@ -1,18 +1,18 @@
 # Sun Spot Analyser API
 
-The Sun Spot Analyser API is a RESTful API that allows users to analyze areas of the Sun for thermal activity. It provides endpoints to create a grid of raw heat measurements and calculate the solar activity scores for each location on the grid.
+#The Sun Spot Analyser API is a RESTful API that allows users to analyze areas of the Sun for thermal activity. It provides endpoints to create a grid of raw heat measurements and calculate the solar activity scores for each location on the grid.
 
-Getting Started
-These instructions will guide you on setting up and running the Sun Spot Analyser API on your local machine.
+#Getting Started
+#These instructions will guide you on setting up and running the Sun Spot Analyser API on your local machine.
 
-Prerequisites
-Python 3.x
-Flask (Python web framework)
-Installation
-Clone the repository:
-bash
-Copy code
-git clone https://github.com/raal-jr/sun-spot-analyser-api.git
+#Prerequisites
+#Python 3.x
+#Flask (Python web framework)
+#Installation
+#Clone the repository:
+#bash
+#Copy code
+#git clone https://github.com/raal-jr/sun-spot-analyser-api.git
 Navigate to the project directory:
 bash
 Copy code
